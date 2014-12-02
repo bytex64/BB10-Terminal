@@ -1,0 +1,6 @@
+arm/
+.settings/
+assets/.assets.index
+translations/*.qm
+config.pri
+precompiled.h
