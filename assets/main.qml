@@ -45,6 +45,13 @@ TabbedPane {
                     onTriggered: {
                         pty.write("\x04")
                     }
+                },
+                ActionItem {
+                    title: "Control-Z"
+                    imageSource: "asset:///control-z.png"
+                    onTriggered: {
+                        pty.write("\x1a")
+                    }
                 }
             ]
             keyListeners: [
