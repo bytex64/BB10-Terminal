@@ -25,10 +25,10 @@ TerminalControl::TerminalControl(Container *parent)
 
     m_label->setMultiline(true);
 
-    TextStyle *monospaceStyle = new TextStyle(SystemDefaults::TextStyles::bodyText());
-    monospaceStyle->setFontFamily("\"DejaVu Sans Mono\", monospace");
+    TextStyle monospaceStyle(SystemDefaults::TextStyles::bodyText());
+    monospaceStyle.setFontFamily("\"DejaVu Sans Mono\", monospace");
 
-    m_label->textStyle()->setBase(*monospaceStyle);
+    m_label->textStyle()->setBase(monospaceStyle);
 
     m_scrollView->setContent(m_label);
     m_rootContainer->add(m_scrollView);
