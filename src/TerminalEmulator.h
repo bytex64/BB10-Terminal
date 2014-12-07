@@ -10,6 +10,7 @@
 
 #include <QObject>
 #include <QMetaType>
+#include <QList>
 
 class TerminalEmulator: public QObject
 {
@@ -25,6 +26,7 @@ public:
 
 signals:
     void screenChanged(QString data);
+    void screenOverflowed(QList<QString> lines);
 
 private:
     QString _data;
