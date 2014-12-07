@@ -12,6 +12,7 @@
 
 #include "Pty.h"
 #include "TerminalEmulator.h"
+#include "TerminalControl.h"
 
 using namespace bb::cascades;
 
@@ -31,6 +32,10 @@ ApplicationUI::ApplicationUI() :
 
     // initial load
     onSystemLanguageChanged();
+
+    // Register the custom display widget *before* we create QML
+    // so we can use the custom widget in the QML.
+    qmlRegisterType<TerminalControl>("terminal.control", 1, 0, "TerminalControl");
 
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
