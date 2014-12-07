@@ -3,25 +3,17 @@
  */
 
 import bb.cascades 1.2
+import terminal.control 1.0
 
 TabbedPane {
     Tab { //First tab
         // Localized text with the dynamic translation and locale updates support
         title: qsTr("Tab 1") + Retranslate.onLocaleOrLanguageChanged
         Page {
-            ScrollView {
-                id: terminalScroller
-                scrollViewProperties.scrollMode: ScrollMode.Vertical
-
-                Container {
-                    Label {
-                        text: terminalEmulator.screen
-                        multiline: true
-                        textStyle.fontFamily: "DejaVu Sans Mono"
-                        id: terminalOutput
-                    }
-                }
+            TerminalControl {
+                id: terminalControl
             }
+
             actions: [
                 ActionItem {
                     title: "Tab"
@@ -66,11 +58,11 @@ TabbedPane {
             ]
             onCreationCompleted: {
                 pty.dataReady.connect(postData);
+                terminalEmulator.screenChanged.connect(terminalControl.update)
             }
             function postData(val) {
                 terminalEmulator.addData(val);
 		// TODO: a better way to scroll to the bottom
-                terminalScroller.scrollToPoint(0, 999999);
             }
         }
     }
