@@ -62,7 +62,6 @@ TabbedPane {
             }
             function postData(val) {
                 terminalEmulator.addData(val);
-		// TODO: a better way to scroll to the bottom
             }
         }
     }

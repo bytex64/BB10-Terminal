@@ -45,7 +45,4 @@ TerminalControl::~TerminalControl()
 void TerminalControl::update(QString data)
 {
     m_label->setText(data);
-
-    // Dirty hack. Do better later.
-    m_scrollView->scrollToPoint(0, 999999, ScrollAnimation::Smooth);
 }
