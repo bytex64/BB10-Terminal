@@ -58,8 +58,8 @@ void TerminalControl::calculateWindowSize()
 }
 void TerminalControl::setTerminalFont()
 {
-    TextStyle *monospaceStyle = new TextStyle(SystemDefaults::TextStyles::bodyText());
-    monospaceStyle->setFontFamily("\"DejaVu Sans Mono\", monospace");
+    TextStyle monospaceStyle = TextStyle(SystemDefaults::TextStyles::bodyText());
+    monospaceStyle.setFontFamily("\"DejaVu Sans Mono\", monospace");
 
-    m_label->textStyle()->setBase(*monospaceStyle);
+    m_label->textStyle()->setBase(monospaceStyle);
 }
