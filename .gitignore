@@ -1,4 +1,5 @@
 arm/
+x86/
 .settings/
 assets/.assets.index
 translations/*.qm
