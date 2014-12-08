@@ -59,13 +59,17 @@ TabbedPane {
                     onKeyPressed: {
                         if (event.key < 200) {
                             pty.write(event.unicode);
+                        } else {
+                            //pty.write("[" + event.key + "]");
                         }
                     }
                 }
             ]
             onCreationCompleted: {
                 pty.dataReady.connect(postData);
-                terminalEmulator.screenChanged.connect(terminalControl.update)
+                terminalEmulator.screenChanged.connect(terminalControl.update);
+                terminalEmulator.sizeChanged.connect(pty.handleSizeChange);
+                terminalEmulator.setSize(32, 14);
             }
             function postData(val) {
                 terminalEmulator.addData(val);

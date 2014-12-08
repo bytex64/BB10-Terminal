@@ -32,6 +32,9 @@ private:
 class Pty: public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(int width READ width WRITE setWidth())
+    Q_PROPERTY(int height READ height WRITE setHeight())
 public:
     Pty(QObject *parent = 0);
     virtual ~Pty();
@@ -44,6 +47,14 @@ public:
 
     Q_INVOKABLE QString read();
     Q_INVOKABLE bool write(QString data);
+
+    int width();
+    void setWidth(int w);
+    int height();
+    void setHeight(int h);
+
+public slots:
+    void handleSizeChange(int w, int h);
 
 private slots:
     void handleWorkerDataReady();

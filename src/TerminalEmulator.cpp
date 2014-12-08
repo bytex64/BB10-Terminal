@@ -56,6 +56,7 @@ void TerminalEmulator::setWidth(int w) {
     m_width = w;
     adjustInternals();
     emit widthChanged(w);
+    emit sizeChanged(m_width, m_height);
 }
 
 int TerminalEmulator::height() {
@@ -66,6 +67,16 @@ void TerminalEmulator::setHeight(int h) {
     m_height = h;
     adjustInternals();
     emit heightChanged(h);
+    emit sizeChanged(m_width, m_height);
+}
+
+void TerminalEmulator::setSize(int w, int h) {
+    m_width = w;
+    m_height = h;
+    adjustInternals();
+    emit widthChanged(w);
+    emit heightChanged(h);
+    emit sizeChanged(w, h);
 }
 
 // Adjust internal data structures to match width and height

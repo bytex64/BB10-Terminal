@@ -31,12 +31,14 @@ public:
     void setWidth(int w);
     int height();
     void setHeight(int h);
+    Q_INVOKABLE void setSize(int h, int w);
 
 signals:
     void screenChanged(QString data);
     void screenOverflowed(QList<QString> lines);
     void widthChanged(int w);
     void heightChanged(int h);
+    void sizeChanged(int w, int h);
 
 private:
     QList<QString> m_data;
