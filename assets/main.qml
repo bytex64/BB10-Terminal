@@ -68,7 +68,7 @@ TabbedPane {
             onCreationCompleted: {
                 pty.dataReady.connect(postData);
                 terminalEmulator.screenChanged.connect(terminalControl.update);
-                terminalEmulator.sizeChanged.connect(pty.handleSizeChange);
+                terminalEmulator.sizeChanged.connect(pty.setSize);
                 terminalEmulator.setSize(32, 14);
             }
             function postData(val) {

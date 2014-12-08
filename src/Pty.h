@@ -54,7 +54,7 @@ public:
     void setHeight(int h);
 
 public slots:
-    void handleSizeChange(int w, int h);
+    void setSize(int w, int h);
 
 private slots:
     void handleWorkerDataReady();

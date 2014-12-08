@@ -168,6 +168,12 @@ void Pty::setHeight(int h) {
     ioctl(master_fd, TIOCSWINSZ, &ws);
 }
 
+void Pty::setSize(int w, int h) {
+    ws.ws_col = w;
+    ws.ws_row = h;
+    ioctl(master_fd, TIOCSWINSZ, &ws);
+}
+
 void Pty::handleWorkerDataReady() {
     QString str = Pty::read();
     emit dataReady(str);
@@ -186,10 +192,4 @@ void Pty::handlePtyError() {
         QString msg = "[Child process exited with status " + QString::number(child_status) + "]";
         emit dataReady(msg);
     }
-}
-
-void Pty::handleSizeChange(int w, int h) {
-    ws.ws_col = w;
-    ws.ws_row = h;
-    ioctl(master_fd, TIOCSWINSZ, &ws);
 }
