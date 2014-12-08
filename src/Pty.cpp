@@ -31,6 +31,7 @@ void PtyIOWorker::waitForInput() {
     if (r == -1) {
         perror("PtyIOWorker select");
         this->thread()->quit();
+        emit ptyErrored();
         return;
     }
     emit dataReady();
@@ -75,6 +76,7 @@ bool Pty::open() {
     connect(&wait_thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
     connect(this, SIGNAL(startWait()), worker, SLOT(waitForInput()));
     connect(worker, SIGNAL(dataReady()), this, SLOT(handleWorkerDataReady()));
+    connect(worker, SIGNAL(ptyErrored()), this, SLOT(handlePtyError()));
     wait_thread.start();
 
     emit startWait();
@@ -151,4 +153,19 @@ bool Pty::write(QString data) {
 void Pty::handleWorkerDataReady() {
     QString str = Pty::read();
     emit dataReady(str);
+}
+
+void Pty::handlePtyError() {
+    int child_status;
+
+    int pid = waitpid(child_pid, &child_status, WNOHANG);
+    if (pid == 0) {
+        qDebug() << "Pty error but child still alive?";
+    } else if (pid == -1 && errno == EINTR) {
+        qDebug() << "Interrupted";
+    } else {
+        qDebug() << "Child exited" << child_status;
+        QString msg = "[Child process exited with status " + QString::number(child_status) + "]";
+        emit dataReady(msg);
+    }
 }

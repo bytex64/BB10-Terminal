@@ -23,6 +23,7 @@ public slots:
 
 signals:
     void dataReady();
+    void ptyErrored();
 
 private:
     int _fd;
@@ -46,6 +47,7 @@ public:
 
 private slots:
     void handleWorkerDataReady();
+    void handlePtyError();
 
 signals:
     void dataReady(QString data);
