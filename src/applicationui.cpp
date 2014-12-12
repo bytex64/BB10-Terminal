@@ -32,16 +32,13 @@ ApplicationUI::ApplicationUI() :
     // initial load
     onSystemLanguageChanged();
 
+    // Register Pty and TerminalEmulator classes in QML
+    qmlRegisterType<Pty>("terminal.pty", 1, 0, "Pty");
+    qmlRegisterType<TerminalEmulator>("terminal.emulator", 1, 0, "TerminalEmulator");
+
     // Create scene document from main.qml asset, the parent is set
     // to ensure the document gets destroyed properly at shut down.
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-
-    TerminalEmulator *t = new TerminalEmulator(this);
-    qml->setContextProperty("terminalEmulator", t);
-
-    Pty *p = new Pty(this);
-    p->open();
-    qml->setContextProperty("pty", p);
 
     // Create root object for the UI
     AbstractPane *root = qml->createRootObject<AbstractPane>();

@@ -39,7 +39,7 @@ public:
     Pty(QObject *parent = 0);
     virtual ~Pty();
 
-    bool open();
+    Q_INVOKABLE bool open();
     pid_t getPID();
 
     bool read(char *buf, int *len);

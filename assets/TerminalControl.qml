@@ -1,4 +1,6 @@
 import bb.cascades 1.2
+import terminal.pty 1.0
+import terminal.emulator 1.0
 
 Container {
     property variant appScene: Application.scene
@@ -14,11 +16,19 @@ Container {
             }
         }
     }
-    attachedObjects: LayoutUpdateHandler {
-        onLayoutFrameChanged: {
-            terminalView.preferredHeight = layoutFrame.height;
+    attachedObjects: [
+        LayoutUpdateHandler {
+            onLayoutFrameChanged: {
+                terminalView.preferredHeight = layoutFrame.height;
+            }
+        },
+        Pty {
+            id: pty
+        },
+        TerminalEmulator {
+            id: terminalEmulator
         }
-    }
+    ]
     onAppSceneChanged: {
         terminalView.requestFocus();
     }
@@ -27,14 +37,14 @@ Container {
         terminalEmulator.screenChanged.connect(setScreen);
         terminalEmulator.sizeChanged.connect(pty.setSize);
         terminalEmulator.setSize(32, 14);
-        inputReceived.connect(pty.write);        
+        inputReceived.connect(pty.write);
     }
     
     signal sizeChanged(int w, int h);
     signal inputReceived(string s);
     
     function terminalReady() {
-        setScreen(terminalEmulator.screen);
+        pty.open();
     }
     
     function setScreen(l) {
