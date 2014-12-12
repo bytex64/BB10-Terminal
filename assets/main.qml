@@ -19,7 +19,7 @@ TabbedPane {
                     imageSource: "asset:///tab.png"
                     ActionBar.placement: ActionBarPlacement.OnBar
                     onTriggered: {
-                        pty.write("\x09");
+                        terminalControl.write("\x09");
                     }
                 },
                 ActionItem {
@@ -27,7 +27,7 @@ TabbedPane {
                     imageSource: "asset:///control-c.png"
                     ActionBar.placement: ActionBarPlacement.OnBar
                     onTriggered: {
-                        pty.write("\x03")
+                        terminalControl.write("\x03")
                     }
                 },
                 ActionItem {
@@ -35,21 +35,21 @@ TabbedPane {
                     imageSource: "asset:///esc.png"
                     ActionBar.placement: ActionBarPlacement.OnBar
                     onTriggered: {
-                        pty.write("\x1b");
+                        terminalControl.write("\x1b");
                     }
                 },
                 ActionItem {
                     title: "Control-D"
                     imageSource: "asset:///control-d.png"
                     onTriggered: {
-                        pty.write("\x04")
+                        terminalControl.write("\x04")
                     }
                 },
                 ActionItem {
                     title: "Control-Z"
                     imageSource: "asset:///control-z.png"
                     onTriggered: {
-                        pty.write("\x1a")
+                        terminalControl.write("\x1a")
                     }
                 }
             ]

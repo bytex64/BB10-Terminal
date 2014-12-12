@@ -42,5 +42,9 @@ Container {
             type: "setScreen",
             content: l
         }));
+    }
+    
+    function write(s) {
+        pty.write(s);
     } 
 }
