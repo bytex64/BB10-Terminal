@@ -13,6 +13,7 @@ TabbedPane {
                 id: terminalControl
             }
 
+            actionBarVisibility: ChromeVisibility.Visible
             actions: [
                 ActionItem {
                     title: "Tab"

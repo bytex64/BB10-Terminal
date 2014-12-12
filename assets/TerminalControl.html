@@ -13,16 +13,24 @@ body {
 	width: 1em;
 }
 
-#output {
+.terminal {
 	font-family: DejaVu Sans Mono;
 	font-size: 12px;
 	margin: 0;
+}
+
+#debug {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 50%;
+	height: 10em;
 }
 </style>
 
 <input id="event_input">
 
-<pre id="output">
+<pre id="output" class="terminal">
 </pre>
 
 <div id="debug"></div>
@@ -31,6 +39,10 @@ body {
 var event_input = document.getElementById('event_input');
 var output = document.getElementById('output');
 var debug = document.getElementById('debug');
+
+function debugLog(s) {
+	debug.innerHTML = s + '<br>' + debug.innerHTML;
+}
 
 function sendMessage(type, content) {
     navigator.cascades.postMessage(JSON.stringify({
@@ -43,8 +55,32 @@ function sendInput(str) {
 	sendMessage("input", str);
 }
 
+function calculateTerminalSize() {
+	var sizer = document.createElement('pre');
+	sizer.innerHTML = "XXXXXXXXXX\nX\nX";
+	sizer.style.position = 'absolute';
+	sizer.className = 'terminal';
+	document.body.appendChild(sizer);
+	var charWidth = sizer.clientWidth / 10.0;
+	var charHeight = sizer.clientHeight / 3.0;
+	document.body.removeChild(sizer);
+	debugLog("charWidth: " + charWidth);
+	debugLog("charHeight: " + charHeight);
+	
+	debugLog("window width: " + window.innerWidth);
+	debugLog("window height: " + window.innerHeight);
+	debugLog("document width: " + document.documentElement.clientWidth);
+	debugLog("document height: " + document.documentElement.clientHeight);
+	var terminalWidth = document.documentElement.clientWidth;
+	var terminalHeight = document.documentElement.clientHeight;
+	return {
+		width: Math.floor(terminalWidth / charWidth),
+		height: Math.floor(terminalHeight / charHeight)
+	};
+}
+
 event_input.addEventListener('keydown', function(event) {
-        debug.innerHTML = event.keyCode + " : " + event.keyIdentifier + " : " + event.shiftKey + '<br>' + debug.innerHTML;
+        debugLog(event.keyCode + " : " + event.keyIdentifier + " : " + event.shiftKey);
         
         if (event.keyCode == 18) {
         	// Alt key
@@ -84,7 +120,12 @@ document.body.addEventListener('keydown', function(event) {
 	event_input.focus();
 }, false);
 
+window.addEventListener('resize', function() {
+	sendMessage("terminalSize", calculateTerminalSize());
+}, false);
+
 window.addEventListener('load', function() {
+	sendMessage("terminalSize", calculateTerminalSize());
 	event_input.focus();
 	sendMessage("ready");
 }, false);

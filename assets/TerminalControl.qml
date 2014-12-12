@@ -11,6 +11,9 @@ Container {
             var msg = JSON.parse(message.data);
             if (msg.type == "input") {
                 inputReceived(msg.content);
+            } else if (msg.type == "terminalSize") {
+                console.log("Terminal size is " + msg.content.width + "x" + msg.content.height);
+                terminalEmulator.setSize(msg.content.width, msg.content.height);
             } else if (msg.type == "ready") {
                 terminalReady();
             }
