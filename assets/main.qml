@@ -3,7 +3,6 @@
  */
 
 import bb.cascades 1.2
-import terminal.control 1.0
 
 TabbedPane {
     Tab { //First tab
@@ -54,26 +53,6 @@ TabbedPane {
                     }
                 }
             ]
-            keyListeners: [
-                KeyListener {
-                    onKeyPressed: {
-                        if (event.key < 200) {
-                            pty.write(event.unicode);
-                        } else {
-                            //pty.write("[" + event.key + "]");
-                        }
-                    }
-                }
-            ]
-            onCreationCompleted: {
-                pty.dataReady.connect(postData);
-                terminalEmulator.screenChanged.connect(terminalControl.update);
-                terminalEmulator.sizeChanged.connect(pty.setSize);
-                terminalEmulator.setSize(32, 14);
-            }
-            function postData(val) {
-                terminalEmulator.addData(val);
-            }
         }
     }
     Tab {

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width"/>
+
+<style>
+body {
+	margin: 0;
+}
+
+#event_input {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 1em;
+}
+
+#output {
+	font-family: DejaVu Sans Mono;
+	font-size: 12px;
+	margin: 0;
+}
+</style>
+
+<input id="event_input">
+
+<pre id="output">
+</pre>
+
+<div id="debug"></div>
+
+<script>
+var event_input = document.getElementById('event_input');
+var output = document.getElementById('output');
+var debug = document.getElementById('debug');
+
+function sendMessage(type, content) {
+    navigator.cascades.postMessage(JSON.stringify({
+    	type: type,
+    	content: content
+    }));
+}
+
+function sendInput(str) {
+	sendMessage("input", str);
+}
+
+event_input.addEventListener('keydown', function(event) {
+        debug.innerHTML = event.keyCode + " : " + event.keyIdentifier + " : " + event.shiftKey + '<br>' + debug.innerHTML;
+        
+        if (event.keyCode == 18) {
+        	// Alt key
+        	return;
+        } else if (event.keyCode == 13 || event.keyCode == 8) {
+        	sendInput(String.fromCharCode(event.keyCode));
+        } else if (event.keyCode >= 65 && event.keyCode <= 90) {
+        	var c = event.keyCode;
+        	if (!event.shiftKey) {
+        		c += 32;
+        	}
+        	sendInput(String.fromCharCode(c));
+        } else if (event.keyIdentifier.match(/^U\+/)) {
+        	var c = parseInt(event.keyIdentifier.slice(2), 16);
+	        if (c == 0xF0E1 || c == 0xF0E2) {
+	        	// Left shift and right shift
+	        	return;
+	        }
+	        sendInput(String.fromCharCode(c));
+	    } 
+}, false);
+
+event_input.addEventListener('keyup', function(event) {
+        if (event_input.value == "") {
+        	event_input.value = " ";
+        }
+}, false);
+
+navigator.cascades.onmessage = function(message) {
+	var msg = JSON.parse(message);
+	if (msg.type == "setScreen") {
+		output.innerHTML = msg.content;
+	}
+};
+
+document.body.addEventListener('keydown', function(event) {
+	event_input.focus();
+}, false);
+
+window.addEventListener('load', function() {
+	event_input.focus();
+	sendMessage("ready");
+}, false);
+</script>
