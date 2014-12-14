@@ -32,6 +32,8 @@ public:
     int height();
     void setHeight(int h);
 
+    QPoint cursorPosition();
+
 signals:
     void screenChanged(QString data);
     void screenOverflowed(QList<QString> lines);

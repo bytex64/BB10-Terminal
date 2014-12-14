@@ -55,7 +55,7 @@ function sendInput(str) {
 	sendMessage("input", str);
 }
 
-function calculateTerminalSize() {
+function calculateTerminalSize(auto) {
 	var sizer = document.createElement('pre');
 	sizer.innerHTML = "XXXXXXXXXX\nX\nX";
 	sizer.style.position = 'absolute';
@@ -73,10 +73,16 @@ function calculateTerminalSize() {
 	debugLog("document height: " + document.documentElement.clientHeight);
 	var terminalWidth = document.documentElement.clientWidth;
 	var terminalHeight = document.documentElement.clientHeight;
-	return {
+	
+	if (typeof auto == 'undefined') {
+		auto = false
+	}
+	
+	sendMessage("terminalSize", {
 		width: Math.floor(terminalWidth / charWidth),
-		height: Math.floor(terminalHeight / charHeight)
-	};
+		height: Math.floor(terminalHeight / charHeight),
+		auto: auto
+	});
 }
 
 event_input.addEventListener('keydown', function(event) {
@@ -121,11 +127,11 @@ document.body.addEventListener('keydown', function(event) {
 }, false);
 
 window.addEventListener('resize', function() {
-	sendMessage("terminalSize", calculateTerminalSize());
+	calculateTerminalSize(true);
 }, false);
 
 window.addEventListener('load', function() {
-	sendMessage("terminalSize", calculateTerminalSize());
+	calculateTerminalSize();
 	event_input.focus();
 	sendMessage("ready");
 }, false);

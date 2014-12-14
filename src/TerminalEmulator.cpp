@@ -17,6 +17,8 @@ TerminalEmulator::TerminalEmulator(QObject *parent)
     m_width = 80;
     m_height = 25;
     adjustInternals();
+    m_cursorpos.setX(0);
+    m_cursorpos.setY(0);
 }
 
 TerminalEmulator::~TerminalEmulator()
@@ -70,6 +72,10 @@ void TerminalEmulator::setHeight(int h) {
     emit sizeChanged(m_width, m_height);
 }
 
+QPoint TerminalEmulator::cursorPosition() {
+    return m_cursorpos;
+}
+
 void TerminalEmulator::setSize(int w, int h) {
     m_width = w;
     m_height = h;
@@ -81,25 +87,47 @@ void TerminalEmulator::setSize(int w, int h) {
 
 // Adjust internal data structures to match width and height
 void TerminalEmulator::adjustInternals() {
+    bool resized = false;
+
     if (m_height < m_data.size()) {
         QList<QString> overflow;
         while (m_height < m_data.size()) {
             overflow.append(m_data.takeFirst());
+            m_cursorpos.ry()--;
+        }
+        if (m_cursorpos.y() < 0) {
+            m_cursorpos.setY(0);
         }
 
         emit screenOverflowed(overflow);
+        resized = true;
     } else if (m_height > m_data.size()) {
         while (m_height > m_data.size()) {
-            m_data.append(QString(m_width, ' '));
+            m_data.prepend(QString(m_width, ' '));
+            m_cursorpos.ry()++;
         }
+        resized = true;
     }
 
     for (int i = 0; i < m_data.size(); i++) {
         if (m_data[i].size() > m_width) {
             m_data[i].resize(m_width);
+            resized = true;
         } else if (m_data[i].size() < m_width) {
             m_data[i] += QString(m_width - m_data[i].size(), ' ');
+            resized = true;
         }
+    }
+
+    // Clamp cursor to screen
+    if (m_cursorpos.x() >= m_width) {
+        m_cursorpos.setX(m_width - 1);
+    }
+    if (m_cursorpos.y() >= m_height) {
+        m_cursorpos.setY(m_height - 1);
+    }
+    if (resized) {
+        emit screenChanged(screen());
     }
 }
 
@@ -109,8 +137,10 @@ void TerminalEmulator::cursorForward() {
         m_cursorpos.setX(0);
         if (m_cursorpos.y() == m_height - 1) {
             // On the last line, scroll down
+            QList<QString> overflow;
+            overflow.append(m_data.takeFirst());
             m_data.append(QString(m_width, ' '));
-            adjustInternals();
+            emit screenOverflowed(overflow);
         } else {
             m_cursorpos.ry()++;
         }

@@ -4,6 +4,8 @@ import terminal.emulator 1.0
 
 Container {
     property variant appScene: Application.scene
+    property bool autoResize: false
+
     WebView {
         url: "local:///assets/TerminalControl.html"
         id: terminalView
@@ -12,8 +14,10 @@ Container {
             if (msg.type == "input") {
                 inputReceived(msg.content);
             } else if (msg.type == "terminalSize") {
-                console.log("Terminal size is " + msg.content.width + "x" + msg.content.height);
-                terminalEmulator.setSize(msg.content.width, msg.content.height);
+                if (autoResize || !msg.content.auto) {
+                    console.log("Terminal size is " + msg.content.width + "x" + msg.content.height);
+                    terminalEmulator.setSize(msg.content.width, msg.content.height);
+                }
             } else if (msg.type == "ready") {
                 terminalReady();
             }
@@ -39,7 +43,6 @@ Container {
         pty.dataReady.connect(terminalEmulator.addData);
         terminalEmulator.screenChanged.connect(setScreen);
         terminalEmulator.sizeChanged.connect(pty.setSize);
-        terminalEmulator.setSize(32, 14);
         inputReceived.connect(pty.write);
     }
     
